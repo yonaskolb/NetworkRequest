@@ -4,10 +4,10 @@ A simple networking library for easily defining, executing and mocking network r
 
 ```swift
 
-struct GetPosts: JSONDecodableRequest {
-    typealias ResponseType = [Post]
+struct GetPosts: JSONDecodableRequest {  
     let userId: Int
 
+    typealias ResponseType = [Post]
     let path: String = "/posts"
     var urlParams: [String: Any?] { return ["userId": userId] }
 }
