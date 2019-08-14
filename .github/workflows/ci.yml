@@ -2,13 +2,9 @@ name: CI
 on: [push]
 jobs:
   test:
-    name: Test ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-
+    runs-on: macos-latest
     steps:
+    - uses: actions/checkout@master
     - name: swift build
       run: swift build
     - name: swift test
