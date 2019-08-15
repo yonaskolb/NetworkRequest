@@ -4,9 +4,10 @@ import Foundation
 public class HTTPNetworkService: NetworkService {
 
     /// Will be prepended to all request baseURLs and paths
-    let baseURL: String?
-    let urlSession: URLSession
-    let completionQueue = DispatchQueue.main
+    var baseURL: String?
+    var urlSession: URLSession
+    var completionQueue = DispatchQueue.main
+    var headers: [String: String] = [:]
 
     public init(baseURL: String? = nil, urlSession: URLSession = .shared) {
         self.baseURL = baseURL
@@ -39,6 +40,11 @@ public class HTTPNetworkService: NetworkService {
             }
             urlRequest.url = fullURL
         }
+
+        for (name, value) in headers {
+            urlRequest.setValue(value, forHTTPHeaderField: name)
+        }
+
         let dataTask = urlSession.dataTask(with: urlRequest) { (data, urlResponse, error) in
 
             if let error = error {
