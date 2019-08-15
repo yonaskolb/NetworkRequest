@@ -7,10 +7,11 @@ public class HTTPNetworkService: NetworkService {
     var baseURL: String?
     var urlSession: URLSession
     var completionQueue = DispatchQueue.main
-    var headers: [String: String] = [:]
+    var headers: [String: String]
 
-    public init(baseURL: String? = nil, urlSession: URLSession = .shared) {
+    public init(baseURL: String? = nil, headers: [String: String] = [:], urlSession: URLSession = .shared) {
         self.baseURL = baseURL
+        self.headers = headers
         self.urlSession = urlSession
     }
 
