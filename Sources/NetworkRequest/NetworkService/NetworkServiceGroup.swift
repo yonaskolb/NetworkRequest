@@ -1,6 +1,8 @@
 
 import Foundation
 
+/// Used for combining multiple network services. This is useful when mocking with MockNetworkService and then falling back to HTTPNetworkService.
+/// If one of the services doesn't handle the request by returning ResponseError.noResponse, the next service will run
 public class NetworkServiceGroup: NetworkService {
 
     public let services: [NetworkService]

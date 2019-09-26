@@ -1,6 +1,7 @@
 
 import Foundation
 
+/// Used for mocking out certain requests. If a request is not handled it will fail with RequestError.noResponse
 public class MockNetworkService: NetworkService {
 
     private var requests: [String: Result<Any, RequestError>] = [:]

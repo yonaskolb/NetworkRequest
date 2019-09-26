@@ -1,6 +1,7 @@
 
 import Foundation
 
+/// Used to send requests via URL session
 public class HTTPNetworkService: NetworkService {
 
     /// Will be prepended to all request baseURLs and paths
