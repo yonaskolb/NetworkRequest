@@ -73,13 +73,15 @@ public extension Request {
         guard var urlComponents = URLComponents(string: urlString) else {
             fatalError("Invalid url \(urlString)")
         }
-        urlComponents.query = urlParams
-            .compactMap { key, value -> (String, Any)? in
-                guard let value = value else { return nil }
-                return (key, value)
+        if !urlParams.isEmpty {
+            urlComponents.query = urlParams
+                .compactMap { key, value -> (String, Any)? in
+                    guard let value = value else { return nil }
+                    return (key, value)
+            }
+            .map { "\($0)=\($1)" }
+            .joined(separator: "&")
         }
-        .map { "\($0)=\($1)" }
-        .joined(separator: "&")
         guard let url = urlComponents.url else {
             fatalError("Invalid url \(urlComponents)")
         }
@@ -106,7 +108,7 @@ public extension Request {
                 }
         }
         .joined(separator: ", ")
-        return "\(requestName): \(method) \(path) \(params)"
+        return "\(requestName): \(method.rawValue) \(path)\(params.isEmpty ? "" : " \(params)")"
     }
 }
 
