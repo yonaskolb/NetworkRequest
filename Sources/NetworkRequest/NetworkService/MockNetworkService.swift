@@ -16,6 +16,10 @@ open class MockNetworkService: NetworkService {
         requests[request.description] = result.map { $0 }
     }
 
+    public func mock<R: Request>(requestType: R.Type, result: RequestResult<R.ResponseType>) {
+        self.mock(requestType: requestType, { _ in result })
+    }
+
     public func mock<R: Request>(requestType: R.Type = R.self, _ response: @escaping (R) -> RequestResult<R.ResponseType>?) {
         dynamicRequests[requestType.typeName, default: []].append( { request in
             response(request as! R)?.map { $0 }
