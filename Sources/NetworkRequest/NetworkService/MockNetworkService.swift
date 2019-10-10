@@ -2,7 +2,8 @@
 import Foundation
 
 /// Used for mocking out certain requests. If a request is not handled it will fail with RequestError.noResponse
-public class MockNetworkService: NetworkService {
+open class MockNetworkService: NetworkService {
+
 
     private var requests: [String: Result<Any, RequestError>] = [:]
     private var dynamicRequests: [String: [(Any) -> RequestResult<Any>?]] = [:]
