@@ -1,7 +1,7 @@
 
 import Foundation
 
-public enum RequestError: Error, CustomStringConvertible {
+public enum RequestError: Error {
     /// a general networking error
     case networkError(Error)
 
@@ -27,24 +27,42 @@ public enum RequestError: Error, CustomStringConvertible {
         }
     }
 
-    public var description: String {
+    public var message: String {
         switch self {
-        case let .networkError(error): return "\(name):\n\(error.localizedDescription)"
+        case let .networkError(error): return "\(error.localizedDescription)"
         case let .apiError(statusCode, data):
             var error = "API returned \(statusCode)"
-            if let string = String(data: data, encoding: .utf8) {
+            if let string = String(data: data, encoding: .utf8), !string.isEmpty {
                 error += ":\n\(string)"
             }
             return error
         case let .decodingError(error):
             if let error = error as? DecodingError {
-                return "\(name): \(error.description)"
+                return "\(error.description)"
             } else {
-                return "\(name):\n\(error)"
+                return "\(error)"
             }
-        case let .encodingError(error): return "\(name):\n\(error)"
-        case .noResponse: return name
+        case let .encodingError(error): return "\(error)"
+        case .noResponse: return ""
         }
+    }
+
+}
+
+extension RequestError: LocalizedError {
+
+    public var errorDescription: String? {
+        message
+    }
+}
+
+extension RequestError: CustomStringConvertible {
+    public var description: String {
+        var string = name
+        if !message.isEmpty {
+            string += "\n\(message)"
+        }
+        return string.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
 
