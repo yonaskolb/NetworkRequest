@@ -99,13 +99,13 @@ private extension DecodingError {
         }
         switch self {
         case .keyNotFound(let key, _):
-            return "key \"\(key.stringValue)\" not found\(codingPath)"
+            return "Key \"\(key.stringValue)\" not found\(codingPath)"
         case .typeMismatch(let type, _):
-            return "expected type \"\(type)\" not found\(codingPath)"
+            return "Expected type \"\(type)\" not found\(codingPath)"
         case .dataCorrupted:
-            return "data corrupted\(codingPath): \(contextDescription)"
+            return "\(contextDescription)\(codingPath)"
         case .valueNotFound(let type, _):
-            return "value \"\(type)\" not found\(codingPath)"
+            return "Value \"\(type)\" not found\(codingPath)"
         default:
             return String(describing: self)
         }
