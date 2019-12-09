@@ -25,13 +25,13 @@ class RequestHandlerTests: XCTestCase {
 
         XCTAssertTrue(handler.beforeSentCalled)
 
-        let modified = try XCTUnwrap(handler.modified)
+        let modified = try unwrap(handler.modified)
         let urlRequest = try modified.get()
         XCTAssertEqual(urlRequest.allHTTPHeaderFields, ["one": "1"])
-
-        let completed = try XCTUnwrap(handler.completed)
+        
+        let completed = try unwrap(handler.completed)
         let result = try completed.get()
-        _ = try XCTUnwrap(result as? [Post])
+        _ = try unwrap(result as? [Post])
     }
 
     func testHandlerGroup() throws {
@@ -71,7 +71,7 @@ class RequestHandlerTests: XCTestCase {
 
     func testHandlerGroupFailure() throws {
 
-        let modifiedError = StringError(string: "failed")
+        let modifiedError = StringError("failed")
         let handler1 = MockHandler { urlRequest in
             .failure(modifiedError)
         }
@@ -106,7 +106,7 @@ class RequestHandlerTests: XCTestCase {
 
     func testHandlerFailure() throws {
 
-        let modifiedError = StringError(string: "failed")
+        let modifiedError = StringError("failed")
         let handler1 = MockHandler { urlRequest in
             .failure(modifiedError)
         }
@@ -163,12 +163,6 @@ class MockHandler: RequestHandler {
     func requestCompleted(request: AnyRequest, result: RequestResult<Any>) {
         completed = result
     }
-}
-
-fileprivate struct StringError: Error, CustomStringConvertible {
-    let string: String
-
-    var description: String { string }
 }
 
 fileprivate struct GetPosts: JSONDecodableRequest {

@@ -21,3 +21,24 @@ func assertNetworkResponse<R: Request>(service: NetworkService, request: R, expe
         XCTFail("Result didn't match. Recieved \(result) but expected \(expectedResult)", file: file, line: line)
     }
 }
+
+func unwrap<T>(_ value: T?, file: StaticString = #file, line: UInt = #line) throws -> T {
+    if let value = value {
+        return value
+    } else {
+        let error =  "Expected non-nil value of \(T.self)"
+        XCTFail(error, file: file, line: line)
+        throw StringError(error)
+    }
+}
+
+struct StringError: Error, CustomStringConvertible {
+
+    public let string: String
+
+    public init(_ string: String) {
+        self.string = string
+    }
+
+    public var description: String { string }
+}
