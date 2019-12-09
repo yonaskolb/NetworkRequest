@@ -2,7 +2,7 @@
 import XCTest
 import NetworkRequest
 
-class HTTPNetworkRequest: XCTestCase {
+class HTTPNetworkRequestTests: XCTestCase {
 
     let networkService = HTTPNetworkService(baseURL: "https://jsonplaceholder.typicode.com")
 

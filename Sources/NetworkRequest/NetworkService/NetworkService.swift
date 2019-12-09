@@ -11,6 +11,19 @@ public protocol Cancellable {
     func cancel()
 }
 
+public class CancelBlock: Cancellable {
+
+    let block: () -> Void
+
+    public init(block: @escaping () -> Void) {
+        self.block = block
+    }
+
+    public func cancel() {
+        block()
+    }
+}
+
 extension URLSessionDataTask: Cancellable {}
 
 public typealias RequestResult<T> = Result<T, RequestError>

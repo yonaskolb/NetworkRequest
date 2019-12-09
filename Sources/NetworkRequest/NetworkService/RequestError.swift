@@ -14,6 +14,9 @@ public enum RequestError: Error {
     /// the request body failed encoding
     case encodingError(Error)
 
+    /// a request handler failed the request
+    case handlerError(Error)
+
     /// No error or data was returned. Shouldn't happen under normal circumstances. Also used by mock service when no mock is provided
     case noResponse
 
@@ -23,6 +26,7 @@ public enum RequestError: Error {
         case .apiError: return "API Error"
         case .decodingError: return "Decoding Error"
         case .encodingError: return "Encoding Error"
+        case .handlerError(let error): return "\(error)"
         case .noResponse: return "No response"
         }
     }
@@ -43,6 +47,7 @@ public enum RequestError: Error {
                 return "\(error)"
             }
         case let .encodingError(error): return "\(error)"
+        case .handlerError: return ""
         case .noResponse: return ""
         }
     }
