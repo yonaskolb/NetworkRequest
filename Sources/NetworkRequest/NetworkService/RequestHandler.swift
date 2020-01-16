@@ -126,7 +126,7 @@ public struct AnyRequest: Request {
     public var encodeBody: () throws -> Data?
     public var getURLRequest: () throws -> URLRequest
 
-    init<R: Request>(_ request: R) {
+    public init<R: Request>(_ request: R) {
         self.path = request.path
         self.baseURL = request.baseURL
         self.method = request.method
