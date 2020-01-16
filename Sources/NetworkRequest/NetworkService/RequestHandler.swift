@@ -4,26 +4,26 @@ import Foundation
 public protocol RequestHandler {
 
     /// called when request is created
-    func requestCreated(request: AnyRequest)
+    func requestCreated(id: String, request: AnyRequest)
 
     /// validates and modifies the request. complete must be called with either .success or .fail
-    func modifyRequest(request: AnyRequest, urlRequest: URLRequest, complete: @escaping (Result<URLRequest, Error>) -> Void)
+    func modifyRequest(id: String, request: AnyRequest, urlRequest: URLRequest, complete: @escaping (Result<URLRequest, Error>) -> Void)
 
     /// called before request is sent
-    func requestSent(request: AnyRequest)
+    func requestSent(id: String, request: AnyRequest)
 
     /// called when the request completes
-    func requestCompleted(request: AnyRequest, result: RequestResult<Any>)
+    func requestCompleted(id: String, request: AnyRequest, result: RequestResult<Any>)
 }
 
 public extension RequestHandler {
 
-    func requestCreated(request: AnyRequest){}
-    func modifyRequest(request: AnyRequest, urlRequest: URLRequest, complete: @escaping (Result<URLRequest, Error>) -> Void) {
+    func requestCreated(id: String, request: AnyRequest){}
+    func modifyRequest(id: String, request: AnyRequest, urlRequest: URLRequest, complete: @escaping (Result<URLRequest, Error>) -> Void) {
         complete(.success(urlRequest))
     }
-    func requestSent(request: AnyRequest) {}
-    func requestCompleted(request: AnyRequest, result: RequestResult<Any>) {}
+    func requestSent(id: String, request: AnyRequest) {}
+    func requestCompleted(id: String, request: AnyRequest, result: RequestResult<Any>) {}
 }
 
 /// Group different RequestBehaviours together
@@ -35,19 +35,19 @@ public struct RequestHandlerGroup: RequestHandler {
         self.handlers = handlers
     }
 
-    public func requestCreated(request: AnyRequest) {
+    public func requestCreated(id: String, request: AnyRequest) {
         handlers.forEach {
-            $0.requestCreated(request: request)
+            $0.requestCreated(id: id, request: request)
         }
     }
 
-    public func requestSent(request: AnyRequest) {
+    public func requestSent(id: String, request: AnyRequest) {
         handlers.forEach {
-            $0.requestSent(request: request)
+            $0.requestSent(id: id, request: request)
         }
     }
 
-    public func modifyRequest(request: AnyRequest, urlRequest: URLRequest, complete: @escaping (Result<URLRequest, Error>) -> Void) {
+    public func modifyRequest(id: String, request: AnyRequest, urlRequest: URLRequest, complete: @escaping (Result<URLRequest, Error>) -> Void) {
         if handlers.isEmpty {
             complete(.success(urlRequest))
             return
@@ -57,7 +57,7 @@ public struct RequestHandlerGroup: RequestHandler {
         var modifiedRequest = urlRequest
         func validateNext() {
             let handler = handlers[count]
-            handler.modifyRequest(request: request, urlRequest: modifiedRequest) { result in
+            handler.modifyRequest(id: id, request: request, urlRequest: modifiedRequest) { result in
                 count += 1
                 switch result {
                 case .success(let urlRequest):
@@ -75,9 +75,9 @@ public struct RequestHandlerGroup: RequestHandler {
         validateNext()
     }
 
-    public func requestCompleted(request: AnyRequest, result: RequestResult<Any>) {
+    public func requestCompleted(id: String, request: AnyRequest, result: RequestResult<Any>) {
         handlers.forEach {
-            $0.requestCompleted(request: request, result: result)
+            $0.requestCompleted(id: id, request: request, result: result)
         }
     }
 }
@@ -85,28 +85,30 @@ public struct RequestHandlerGroup: RequestHandler {
 /// Wraps a RequestHandler in an easy to use struct that can be initialized with any request
 public struct AnyRequestHandler {
 
+    let id: String
     let request: AnyRequest
     let handler: RequestHandler
 
-    public init<R: Request>(request: R, handler: RequestHandler) {
+    public init<R: Request>(id: String, request: R, handler: RequestHandler) {
+        self.id = id
         self.request = AnyRequest(request)
         self.handler = handler
     }
 
     func requestCreated() {
-        handler.requestCreated(request: request)
+        handler.requestCreated(id: id, request: request)
     }
 
     public func requestSent() {
-        handler.requestSent(request: request)
+        handler.requestSent(id: id, request: request)
     }
 
     public func modifyRequest(_ urlRequest: URLRequest, complete: @escaping (Result<URLRequest, Error>) -> Void) {
-        handler.modifyRequest(request: request, urlRequest: urlRequest, complete: complete)
+        handler.modifyRequest(id: id, request: request, urlRequest: urlRequest, complete: complete)
     }
 
     public func requestCompleted(result: RequestResult<Any>) {
-        handler.requestCompleted(request: request, result: result)
+        handler.requestCompleted(id: id, request: request, result: result)
     }
 }
 

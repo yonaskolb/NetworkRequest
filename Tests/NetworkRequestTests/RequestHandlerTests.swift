@@ -50,7 +50,7 @@ class RequestHandlerTests: XCTestCase {
 
         let group = RequestHandlerGroup(handlers: [handler1, handler2])
         let request = GetPosts(userId: 1)
-        let requestHandler = AnyRequestHandler(request: request, handler: group)
+        let requestHandler = AnyRequestHandler(id: "1", request: request, handler: group)
 
         requestHandler.requestSent()
         requestHandler.requestCompleted(result: .success(2))
@@ -84,7 +84,7 @@ class RequestHandlerTests: XCTestCase {
 
         let group = RequestHandlerGroup(handlers: [handler1, handler2])
         let request = GetPosts(userId: 1)
-        let requestHandler = AnyRequestHandler(request: request, handler: group)
+        let requestHandler = AnyRequestHandler(id: "1", request: request, handler: group)
 
         requestHandler.requestCompleted(result: .failure(.handlerError(modifiedError)))
         var errorString: String?
@@ -151,16 +151,16 @@ class MockHandler: RequestHandler {
         self.modifier = modifier
     }
 
-    func modifyRequest(request: AnyRequest, urlRequest: URLRequest, complete: @escaping (Result<URLRequest, Error>) -> Void) {
+    func modifyRequest(id: String, request: AnyRequest, urlRequest: URLRequest, complete: @escaping (Result<URLRequest, Error>) -> Void) {
         let result = modifier(urlRequest)
         modified = result
         complete(result)
     }
-    func requestSent(request: AnyRequest) {
+    func requestSent(id: String, request: AnyRequest) {
         beforeSentCalled = true
     }
 
-    func requestCompleted(request: AnyRequest, result: RequestResult<Any>) {
+    func requestCompleted(id: String, request: AnyRequest, result: RequestResult<Any>) {
         completed = result
     }
 }

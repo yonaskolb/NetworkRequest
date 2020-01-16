@@ -21,7 +21,8 @@ public class HTTPNetworkService: NetworkService {
     @discardableResult
     open func makeRequest<R: Request>(_ request: R, completion: @escaping (RequestResult<R.ResponseType>) -> Void) -> Cancellable? {
 
-        let requestHandler = AnyRequestHandler(request: request, handler: RequestHandlerGroup(handlers: requestHandlers))
+        let id = UUID().uuidString
+        let requestHandler = AnyRequestHandler(id: id, request: request, handler: RequestHandlerGroup(handlers: requestHandlers))
         requestHandler.requestCreated()
 
         func fail(_ error: RequestError) {
