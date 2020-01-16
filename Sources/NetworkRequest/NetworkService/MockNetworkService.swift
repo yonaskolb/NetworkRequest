@@ -12,21 +12,21 @@ open class MockNetworkService: NetworkService {
         
     }
 
-    public func mock<R: Request>(request: R, result: RequestResult<R.ResponseType>) {
+    open func mock<R: Request>(request: R, result: RequestResult<R.ResponseType>) {
         requests[request.description] = result.map { $0 }
     }
 
-    public func mock<R: Request>(requestType: R.Type, result: RequestResult<R.ResponseType>) {
+    open func mock<R: Request>(requestType: R.Type, result: RequestResult<R.ResponseType>) {
         self.mock(requestType: requestType, { _ in result })
     }
 
-    public func mock<R: Request>(requestType: R.Type = R.self, _ response: @escaping (R) -> RequestResult<R.ResponseType>?) {
+    open func mock<R: Request>(requestType: R.Type = R.self, _ response: @escaping (R) -> RequestResult<R.ResponseType>?) {
         dynamicRequests[requestType.typeName, default: []].append( { request in
             response(request as! R)?.map { $0 }
         })
     }
 
-    public func mock<R: Request>(request: R, data: Data, statusCode: Int = 200) {
+    open func mock<R: Request>(request: R, data: Data, statusCode: Int = 200) {
         do {
             let value = try request.decodeResponse(data: data, statusCode: statusCode)
             requests[request.description] = .success(value)
@@ -35,13 +35,13 @@ open class MockNetworkService: NetworkService {
         }
     }
 
-    public func unmockAll() {
+    open func unmockAll() {
         requests.removeAll()
         dynamicRequests.removeAll()
     }
 
     @discardableResult
-    public func makeRequest<R: Request>(_ request: R, completion: @escaping (RequestResult<R.ResponseType>) -> Void) -> Cancellable? {
+    open func makeRequest<R: Request>(_ request: R, completion: @escaping (RequestResult<R.ResponseType>) -> Void) -> Cancellable? {
         if let requestResult = requests[request.description] {
             let result = requestResult.map { $0 as! R.ResponseType }
             completion(result)
