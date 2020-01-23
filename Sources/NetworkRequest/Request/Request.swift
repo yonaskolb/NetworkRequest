@@ -69,7 +69,8 @@ public extension Request {
     }
 
     func getURLRequest() throws -> URLRequest {
-        let urlString = "\(baseURL)\(path)"
+        let percentEncodedPath = path.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
+        let urlString = "\(baseURL)\(percentEncodedPath)"
         guard var urlComponents = URLComponents(string: urlString) else {
             fatalError("Invalid url \(urlString)")
         }
