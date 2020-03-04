@@ -26,6 +26,7 @@ public extension RequestHandler {
         complete(.success(urlRequest))
     }
     func requestSent(id: String, request: AnyRequest) {}
+    func requestResponded(id: String, request: AnyRequest, data: Data?, urlResponse: HTTPURLResponse?, error: Error?) {}
     func requestCompleted(id: String, request: AnyRequest, result: RequestResult<Any>) {}
 }
 
