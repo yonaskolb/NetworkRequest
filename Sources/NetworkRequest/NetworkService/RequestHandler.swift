@@ -138,6 +138,7 @@ public struct AnyRequest: Request {
     public var decodeResponse: (Data, Int) throws -> ResponseType
     public var encodeBody: () throws -> Data?
     public var getURLRequest: () throws -> URLRequest
+    public var responseType: Any.Type
 
     public init<R: Request>(_ request: R) {
         self.path = request.path
@@ -150,6 +151,7 @@ public struct AnyRequest: Request {
         self.decodeResponse = request.decodeResponse
         self.encodeBody = request.encodeBody
         self.getURLRequest = request.getURLRequest
+        self.responseType = R.self
     }
 
     public func decodeResponse(data: Data, statusCode: Int) throws -> Any {
