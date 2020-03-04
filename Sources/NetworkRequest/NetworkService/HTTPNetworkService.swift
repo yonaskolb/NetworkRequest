@@ -66,7 +66,7 @@ public class HTTPNetworkService: NetworkService {
             switch result {
             case .success(let urlRequest):
                 dataTask = self.urlSession.dataTask(with: urlRequest) { (data, urlResponse, error) in
-
+                    requestHandler.requestResponded(data: data, urlResponse: urlResponse as? HTTPURLResponse, error: error)
                     if let error = error {
                         fail(.networkError(error))
                     } else if let data = data {

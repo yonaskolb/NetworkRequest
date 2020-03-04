@@ -24,6 +24,7 @@ class RequestHandlerTests: XCTestCase {
         wait(for: [expectation], timeout: 5)
 
         XCTAssertTrue(handler.beforeSentCalled)
+        XCTAssertTrue(handler.requestResponsedCalled)
 
         let modified = try unwrap(handler.modified)
         let urlRequest = try modified.get()
@@ -145,6 +146,7 @@ class MockHandler: RequestHandler {
 
     var modified: Result<URLRequest, Error>?
     var beforeSentCalled: Bool = false
+    var requestResponsedCalled: Bool = false
     var completed: RequestResult<Any>?
 
     init(modifier: @escaping (URLRequest) -> Result<URLRequest, Error>) {
@@ -162,6 +164,10 @@ class MockHandler: RequestHandler {
 
     func requestCompleted(id: String, request: AnyRequest, result: RequestResult<Any>) {
         completed = result
+    }
+
+    func requestResponded(id: String, request: AnyRequest, data: Data?, urlResponse: HTTPURLResponse?, error: Error?) {
+        requestResponsedCalled = true
     }
 }
 

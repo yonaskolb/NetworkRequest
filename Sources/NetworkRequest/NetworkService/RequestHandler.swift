@@ -12,6 +12,9 @@ public protocol RequestHandler {
     /// called before request is sent
     func requestSent(id: String, request: AnyRequest)
 
+    /// called when the request gets a url response
+    func requestResponded(id: String, request: AnyRequest, data: Data?, urlResponse: HTTPURLResponse?, error: Error?)
+
     /// called when the request completes
     func requestCompleted(id: String, request: AnyRequest, result: RequestResult<Any>)
 }
@@ -75,6 +78,12 @@ public struct RequestHandlerGroup: RequestHandler {
         validateNext()
     }
 
+    public func requestResponded(id: String, request: AnyRequest, data: Data?, urlResponse: HTTPURLResponse?, error: Error?) {
+        handlers.forEach {
+            $0.requestResponded(id: id, request: request, data: data, urlResponse: urlResponse, error: error)
+        }
+    }
+
     public func requestCompleted(id: String, request: AnyRequest, result: RequestResult<Any>) {
         handlers.forEach {
             $0.requestCompleted(id: id, request: request, result: result)
@@ -105,6 +114,10 @@ public struct AnyRequestHandler {
 
     public func modifyRequest(_ urlRequest: URLRequest, complete: @escaping (Result<URLRequest, Error>) -> Void) {
         handler.modifyRequest(id: id, request: request, urlRequest: urlRequest, complete: complete)
+    }
+
+    public func requestResponded(data: Data?, urlResponse: HTTPURLResponse?, error: Error?) {
+        handler.requestResponded(id: id, request: request, data: data, urlResponse: urlResponse, error: error)
     }
 
     public func requestCompleted(result: RequestResult<Any>) {
