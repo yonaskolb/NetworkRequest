@@ -31,7 +31,7 @@ open class MockNetworkService: NetworkService {
             let value = try request.decodeResponse(data: data, statusCode: statusCode)
             requests[request.description] = .success(value)
         } catch {
-            requests[request.description] = .failure(.decodingError(error))
+            requests[request.description] = .failure(.decodingError(data, error))
         }
     }
 

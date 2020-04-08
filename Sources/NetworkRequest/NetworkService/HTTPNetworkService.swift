@@ -76,7 +76,7 @@ public class HTTPNetworkService: NetworkService {
                                 let value = try request.decodeResponse(data: data, statusCode: statusCode)
                                 complete(.success(value))
                             } catch {
-                                fail(.decodingError(error))
+                                fail(.decodingError(data, error))
                             }
                         } else {
                             fail(.apiError(statusCode, data))

@@ -9,7 +9,7 @@ public enum RequestError: Error {
     case apiError(Int, Data)
 
     /// the response body failed decoding
-    case decodingError(Error)
+    case decodingError(Data, Error)
 
     /// the request body failed encoding
     case encodingError(Error)
@@ -40,7 +40,7 @@ public enum RequestError: Error {
                 error += ":\n\(string)"
             }
             return error
-        case let .decodingError(error):
+        case let .decodingError(_, error):
             if let error = error as? DecodingError {
                 return "\(error.description)"
             } else {
