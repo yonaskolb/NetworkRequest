@@ -1,12 +1,12 @@
 
 import Foundation
 
-public protocol DecodableRequest: Request where ResponseType: Decodable {
+public protocol DecodableRequest: Request {
 
     var decoder: Decoder { get }
 }
 
-public extension DecodableRequest {
+public extension DecodableRequest where ResponseType: Decodable {
 
     func decodeResponse(data: Data, statusCode: Int) throws -> ResponseType {
         return try decoder.decode(ResponseType.self, from: data)
