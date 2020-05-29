@@ -2,20 +2,23 @@
 import Foundation
 
 public enum RequestError: Error {
-    /// a general networking error
-    case networkError(Error)
+    /// A general networking error
+    case networkError(URLError, Data?, HTTPURLResponse?)
 
-    /// the request returned a non success response
-    case apiError(Int, Data)
+    /// The request returned a non success response
+    case apiError(Int, Data, HTTPURLResponse?)
 
-    /// the response body failed decoding
+    /// The response body failed decoding
     case decodingError(Data, Error)
 
-    /// the request body failed encoding
+    /// The request body failed encoding
     case encodingError(Error)
 
-    /// a request handler failed the request
+    /// A request handler failed the request
     case handlerError(Error)
+
+    /// A generic error. Could theoritically be a network error if URLSession error is not a URLError, though that should never be the case
+    case genericError(Error)
 
     /// No error or data was returned. Shouldn't happen under normal circumstances. Also used by mock service when no mock is provided
     case noResponse
@@ -27,14 +30,15 @@ public enum RequestError: Error {
         case .decodingError: return "Decoding Error"
         case .encodingError: return "Encoding Error"
         case .handlerError(let error): return "\(error)"
+        case .genericError: return "Error"
         case .noResponse: return "No response"
         }
     }
 
     public var message: String {
         switch self {
-        case let .networkError(error): return "\(error.localizedDescription)"
-        case let .apiError(statusCode, data):
+        case let .networkError(error, _, _): return "\(error.localizedDescription)"
+        case let .apiError(statusCode, data, _):
             var error = "API returned \(statusCode)"
             if let string = String(data: data, encoding: .utf8), !string.isEmpty {
                 error += ":\n\(string)"
@@ -49,6 +53,7 @@ public enum RequestError: Error {
         case let .encodingError(error): return "\(error)"
         case .handlerError: return ""
         case .noResponse: return ""
+        case .genericError: return ""
         }
     }
 

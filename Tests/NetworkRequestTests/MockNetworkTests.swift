@@ -35,9 +35,9 @@ class MockNetworkTests: XCTestCase {
     func testFailureMock() throws {
 
         let request = ItemRequest()
-        networkService.mock(request: request, result: .failure(.apiError(500, Data("test".utf8))))
+        networkService.mock(request: request, result: .failure(.apiError(500, Data("test".utf8), HTTPURLResponse())))
         
-        assertNetworkResponse(service: networkService, request: request, expectedResult: .failure(.apiError(500, Data("test".utf8))))
+        assertNetworkResponse(service: networkService, request: request, expectedResult: .failure(.apiError(500, Data("test".utf8), HTTPURLResponse())))
         assertNetworkResponse(service: networkService, request: ItemRequest2(), expectedResult: .failure(.noResponse))
     }
 

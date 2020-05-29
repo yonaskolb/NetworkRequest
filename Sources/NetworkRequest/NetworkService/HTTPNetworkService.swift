@@ -68,9 +68,14 @@ public class HTTPNetworkService: NetworkService {
                 dataTask = self.urlSession.dataTask(with: urlRequest) { (data, urlResponse, error) in
                     requestHandler.requestResponded(data: data, urlResponse: urlResponse as? HTTPURLResponse, error: error)
                     if let error = error {
-                        fail(.networkError(error))
+                        if let urlError = error as? URLError {
+                            fail(.networkError(urlError, data, urlResponse as? HTTPURLResponse))
+                        } else {
+                            fail(.genericError(error))
+                        }
                     } else if let data = data {
-                        let statusCode = (urlResponse as? HTTPURLResponse)?.statusCode ?? 0
+                        let response = urlResponse as? HTTPURLResponse
+                        let statusCode = response?.statusCode ?? 0
                         if request.validStatusCode(statusCode) {
                             do {
                                 let value = try request.decodeResponse(data: data, statusCode: statusCode)
@@ -79,7 +84,7 @@ public class HTTPNetworkService: NetworkService {
                                 fail(.decodingError(data, error))
                             }
                         } else {
-                            fail(.apiError(statusCode, data))
+                            fail(.apiError(statusCode, data, response))
                         }
                     } else {
                         fail(.noResponse)
