@@ -19,7 +19,7 @@ class HTTPNetworkRequestTests: XCTestCase {
             }
             expectation.fulfill()
         }
-        wait(for: [expectation], timeout: 15)
+        wait(for: [expectation], timeout: 60)
     }
 
     func testNetworkRequestEncoding() throws {
@@ -31,7 +31,7 @@ class HTTPNetworkRequestTests: XCTestCase {
         networkService.makeRequest(request) { result in
             expectation.fulfill()
         }
-        wait(for: [expectation], timeout: 15)
+        wait(for: [expectation], timeout: 60)
     }
 }
 
