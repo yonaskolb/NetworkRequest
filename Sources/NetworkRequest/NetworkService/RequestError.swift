@@ -6,7 +6,7 @@ public enum RequestError: Error {
     case networkError(URLError, Data?, HTTPURLResponse?)
 
     /// The request returned a non success response
-    case apiError(Int, Data, HTTPURLResponse?)
+    case apiError(Data, HTTPURLResponse?)
 
     /// The response body failed decoding
     case decodingError(Data, Error)
@@ -38,8 +38,8 @@ public enum RequestError: Error {
     public var message: String {
         switch self {
         case let .networkError(error, _, _): return "\(error.localizedDescription)"
-        case let .apiError(statusCode, data, _):
-            var error = "API returned \(statusCode)"
+        case let .apiError(data, response):
+            var error = "API returned \(response?.statusCode ?? 0)"
             if let string = String(data: data, encoding: .utf8), !string.isEmpty {
                 error += ":\n\(string)"
             }

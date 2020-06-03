@@ -84,7 +84,7 @@ public class HTTPNetworkService: NetworkService {
                                 fail(.decodingError(data, error))
                             }
                         } else {
-                            fail(.apiError(statusCode, data, response))
+                            fail(.apiError(data, response))
                         }
                     } else {
                         fail(.noResponse)
