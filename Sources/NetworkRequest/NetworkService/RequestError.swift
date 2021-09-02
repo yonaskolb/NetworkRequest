@@ -46,7 +46,7 @@ public enum RequestError: Error {
             return error
         case let .decodingError(_, error):
             if let error = error as? DecodingError {
-                return "\(error.description)"
+                return error.decodingError
             } else {
                 return "\(error)"
             }
@@ -76,7 +76,7 @@ extension RequestError: CustomStringConvertible {
     }
 }
 
-private extension DecodingError {
+extension DecodingError {
 
     var context: DecodingError.Context? {
         switch self {
@@ -94,7 +94,7 @@ private extension DecodingError {
         }
     }
 
-    var description: String {
+    public var decodingError: String {
         let codingPath: String
         let contextDescription: String
         if let context = context {
